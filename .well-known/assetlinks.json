@@ -1,1 +1,8 @@
-[]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.u2bfv5gtjth_droid.huisweek",
+        "sha256_cert_fingerprints": ["61:82:04:68:2B:F9:40:37:64:33:10:86:8B:58:24:2A:F0:C3:0B:98:33:0A:67:EA:2F:D1:6C:12:8F:F6:1A:20"]
+      }
+    }]
