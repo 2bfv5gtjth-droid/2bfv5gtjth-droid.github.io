@@ -601,6 +601,9 @@ html.theme-stars #splash{background-image:radial-gradient(2px 2px at 15% 20%,#ff
 .prof-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 .prof-btns{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 
+/* huisgroep */
+.group-code{text-align:center;font-size:28px;font-weight:800;letter-spacing:.12em;background:var(--bg);border:1.5px dashed var(--line-strong);border-radius:14px;padding:14px;margin:0 0 14px;color:var(--accent)}
+
 @media (prefers-reduced-motion: reduce){
   *{transition:none!important;animation:none!important}
   .sp-check{stroke-dashoffset:0}
@@ -811,6 +814,10 @@ const CHANGELOG=[
     'De 3D-viewer van je Klusmaatje heeft een mooiere achtergrond en een nettere kaart gekregen.',
     'Boodschappenlijst helemaal vernieuwd: elk item krijgt automatisch een passend icoontje, en je ziet in één oogopslag hoeveel je al in huis hebt.',
     'Rond je een taak af, dan krijg je voortaan een leuk berichtje – met tientallen verschillende varianten.'
+  ]},
+  {v:'1.7',items:[
+    'Nieuw: een huisgroep. Start een groep of doe mee met een code, en deel je agenda, taken, huisgenoten en boodschappenlijst live met iedereen – ook op andere telefoons.',
+    'Je punten, Klusmaatje, thema en profiel blijven gewoon persoonlijk.'
   ]}
 ];
 const APP_VERSION=CHANGELOG[CHANGELOG.length-1].v;
@@ -911,7 +918,7 @@ const MISSIONS=[
 ];
 /* ---------- status + opslag ---------- */
 const STORE='homeweek.v1';
-const S={tab:'day',weekStart:null,sel:null,filter:'all',q:'',who:'all',addWho:'',plan:{},custom:[],customCats:[],repeats:[],people:[],theme:'auto',tip:false,intro:0,anim:false,pop:null,list:[],badges:null,stats:{timers:0,rolls:0,bought:0},lateHide:'',earned:0,spent:0,owned:['theme:default','conf:classic'],themeId:'default',confettiId:'classic',boostUntil:0,shields:0,shielded:{},preview:null,shopHint:false,remind:{on:false,lead:10},claimed:{},dayView:'list',cstat:null,rankAt:{},rankCat:null,mascotName:'Klusmaatje',petDate:'',seenVersion:'',mascotSeenStage:0,pet3dRot:{x:-8,y:20},mascotEquip:{head:null,face:null,neck:null},mascotStageAt:{},profileName:'',profilePhoto:null,profileFrame:'none'};
+const S={tab:'day',weekStart:null,sel:null,filter:'all',q:'',who:'all',addWho:'',plan:{},custom:[],customCats:[],repeats:[],people:[],theme:'auto',tip:false,intro:0,anim:false,pop:null,list:[],badges:null,stats:{timers:0,rolls:0,bought:0},lateHide:'',earned:0,spent:0,owned:['theme:default','conf:classic'],themeId:'default',confettiId:'classic',boostUntil:0,shields:0,shielded:{},preview:null,shopHint:false,remind:{on:false,lead:10},claimed:{},dayView:'list',cstat:null,rankAt:{},rankCat:null,mascotName:'Klusmaatje',petDate:'',seenVersion:'',mascotSeenStage:0,pet3dRot:{x:-8,y:20},mascotEquip:{head:null,face:null,neck:null},mascotStageAt:{},profileName:'',profilePhoto:null,profileFrame:'none',groupId:null,deviceId:''};
 (function load(){
   try{
     const raw=localStorage.getItem(STORE);
@@ -928,6 +935,7 @@ const S={tab:'day',weekStart:null,sel:null,filter:'all',q:'',who:'all',addWho:''
       S.mascotName=o.mascotName||'Klusmaatje';S.petDate=o.petDate||'';S.seenVersion=o.seenVersion||'';
       S.mascotSeenStage=typeof o.mascotSeenStage==='number'?o.mascotSeenStage:0;S.pet3dRot=o.pet3dRot||{x:-8,y:20};
       S.mascotEquip=o.mascotEquip||{head:null,face:null,neck:null};S.mascotStageAt=o.mascotStageAt||{};
+      S.groupId=o.groupId||null;S.deviceId=o.deviceId||('d'+Math.random().toString(36).slice(2)+Date.now().toString(36));
       S.profileName=o.profileName||'';S.profilePhoto=o.profilePhoto||null;S.profileFrame=o.profileFrame||'none';
       S.earned=typeof o.earned==='number'?o.earned:Object.keys(S.plan).reduce((a,k)=>a+(S.plan[k]||[]).filter(t=>t.done).reduce((b,t)=>b+pointsOf(t),0),0);
     }
@@ -946,7 +954,8 @@ const S={tab:'day',weekStart:null,sel:null,filter:'all',q:'',who:'all',addWho:''
   S.repeats.forEach(r=>{if(byId[r.tid])r.name=byId[r.tid].name;});
 })();
 function save(){
-  try{localStorage.setItem(STORE,JSON.stringify({plan:S.plan,custom:S.custom,cats:S.customCats,repeats:S.repeats,people:S.people,theme:S.theme,tip:S.tip,introV:S.intro,list:S.list,badges:S.badges,stats:S.stats,earned:S.earned,spent:S.spent,owned:S.owned,themeId:S.themeId,confettiId:S.confettiId,boostUntil:S.boostUntil,shields:S.shields,shielded:S.shielded,shopHint:S.shopHint,remind:S.remind,claimed:S.claimed,dayView:S.dayView,cstat:S.cstat,rankAt:S.rankAt,mascotName:S.mascotName,petDate:S.petDate,seenVersion:S.seenVersion,mascotSeenStage:S.mascotSeenStage,pet3dRot:S.pet3dRot,mascotEquip:S.mascotEquip,mascotStageAt:S.mascotStageAt,profileName:S.profileName,profilePhoto:S.profilePhoto,profileFrame:S.profileFrame}));}catch(e){}
+  try{localStorage.setItem(STORE,JSON.stringify({plan:S.plan,custom:S.custom,cats:S.customCats,repeats:S.repeats,people:S.people,theme:S.theme,tip:S.tip,introV:S.intro,list:S.list,badges:S.badges,stats:S.stats,earned:S.earned,spent:S.spent,owned:S.owned,themeId:S.themeId,confettiId:S.confettiId,boostUntil:S.boostUntil,shields:S.shields,shielded:S.shielded,shopHint:S.shopHint,remind:S.remind,claimed:S.claimed,dayView:S.dayView,cstat:S.cstat,rankAt:S.rankAt,mascotName:S.mascotName,petDate:S.petDate,seenVersion:S.seenVersion,mascotSeenStage:S.mascotSeenStage,pet3dRot:S.pet3dRot,mascotEquip:S.mascotEquip,mascotStageAt:S.mascotStageAt,profileName:S.profileName,profilePhoto:S.profilePhoto,profileFrame:S.profileFrame,groupId:S.groupId,deviceId:S.deviceId}));}catch(e){}
+  pushGroup();
 }
 function snap(){return JSON.stringify({plan:S.plan,repeats:S.repeats,people:S.people,list:S.list});}
 function restore(s){
@@ -2444,6 +2453,7 @@ function renderHome(){
       return '<div class="prow cat" style="--h:'+c.hue+'"><span class="tile">'+esc(c.emoji)+'</span><div class="pt"><b>'+r.cur[1]+' '+esc(r.cur[0])+'</b><span>'+esc(c.name)+' – rang '+(r.i+1)+' van '+CAT_STEPS.length+'</span></div><span class="pts">⭐ '+r.xp+'</span></div>';
     }).join(''):'<p class="sm">Rond taken af om per categorie een rang op te bouwen, van school tot afwas.</p>')
     +'<button class="btn wide" type="button" data-act="tab" data-tab="ranks" style="margin-top:12px">Alle rangen bekijken</button></div>';
+  html+='<div class="hcard" id="groupCard"></div>';
   html+='<div class="hcard" id="profileCard"></div>';
   html+=mascotCard();
   html+=heatmapCard();
@@ -2529,7 +2539,7 @@ function renderHome(){
   html+='<div class="hcard"><h3>Jouw gegevens</h3><p class="sm">Alles wordt alleen op dit apparaat bewaard.</p>'
     +'<button class="btn danger wide" type="button" data-act="reset">Wis al mijn gegevens</button></div>';
   main.innerHTML=html;
-  renderHeaderAvatar();renderProfileCard();
+  renderHeaderAvatar();renderProfileCard();renderHomeGroup();
 }
 
 /* ---------- sheets ---------- */
@@ -3252,6 +3262,118 @@ function openProfile(){
   },80);
 }
 
+
+/* ---------- huisgroep (live delen via Firebase) ---------- */
+const FB_CFG={apiKey:"AIzaSyDHFJCkLNZjuH5IVBY8hA_SqgHnufIVo_g",authDomain:"huisweek.firebaseapp.com",projectId:"huisweek",storageBucket:"huisweek.firebasestorage.app",messagingSenderId:"1063551904133",appId:"1:1063551904133:web:e6610a43062264b41f7cec"};
+let FB=null,FB_LOADING=null;
+function ensureFirebase(){
+  if(FB)return Promise.resolve(FB);
+  if(FB_LOADING)return FB_LOADING;
+  FB_LOADING=Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')
+  ]).then(function(mods){
+    const appMod=mods[0],fsMod=mods[1];
+    const app=appMod.initializeApp(FB_CFG);
+    const db=fsMod.getFirestore(app);
+    FB={db:db,doc:fsMod.doc,setDoc:fsMod.setDoc,getDoc:fsMod.getDoc,onSnapshot:fsMod.onSnapshot};
+    return FB;
+  }).catch(function(e){FB_LOADING=null;throw e;});
+  return FB_LOADING;
+}
+function genGroupCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s='';for(let i=0;i<6;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+function groupSnapshot(){
+  return {plan:S.plan,repeats:S.repeats,people:S.people,list:S.list,updatedAt:Date.now(),updatedBy:S.deviceId};
+}
+let GROUP_UNSUB=null,GROUP_PUSH_TIMER=null,APPLYING_REMOTE=false;
+function pushGroup(){
+  if(!S.groupId||APPLYING_REMOTE)return;
+  clearTimeout(GROUP_PUSH_TIMER);
+  GROUP_PUSH_TIMER=setTimeout(function(){
+    ensureFirebase().then(function(fb){
+      return fb.setDoc(fb.doc(fb.db,'groups',S.groupId),groupSnapshot());
+    }).catch(function(){});
+  },700);
+}
+function applyRemoteGroup(data){
+  APPLYING_REMOTE=true;
+  S.plan=data.plan||{};S.repeats=data.repeats||[];S.people=data.people||[];S.list=data.list||[];
+  save();renderAll();
+  APPLYING_REMOTE=false;
+}
+function subscribeGroup(){
+  if(GROUP_UNSUB){GROUP_UNSUB();GROUP_UNSUB=null;}
+  if(!S.groupId)return;
+  ensureFirebase().then(function(fb){
+    GROUP_UNSUB=fb.onSnapshot(fb.doc(fb.db,'groups',S.groupId),function(snap){
+      const data=snap.data();
+      if(!data||data.updatedBy===S.deviceId)return;
+      applyRemoteGroup(data);
+    },function(){
+      toast('Even geen verbinding met de huisgroep. Wijzigingen worden lokaal bewaard.');
+    });
+  }).catch(function(){
+    toast('Kon de huisgroep-functie niet laden. Check je internetverbinding.');
+  });
+}
+function createGroup(){
+  toast('Groep aanmaken…');
+  ensureFirebase().then(function(fb){
+    const code=genGroupCode();
+    return fb.setDoc(fb.doc(fb.db,'groups',code),groupSnapshot()).then(function(){
+      S.groupId=code;save();subscribeGroup();renderHomeGroup();
+      toast('Groep aangemaakt! Deel de code '+code+' met huisgenoten.');
+    });
+  }).catch(function(){toast('Kon geen groep aanmaken. Check je internetverbinding.');});
+}
+function joinGroup(){
+  const i=$('#group-code');
+  const code=((i&&i.value)||'').trim().toUpperCase();
+  if(!code||code.length<4){toast('Vul een geldige code in.');return;}
+  toast('Verbinden met de groep…');
+  ensureFirebase().then(function(fb){
+    return fb.getDoc(fb.doc(fb.db,'groups',code)).then(function(snap){
+      if(!snap.exists()){toast('Geen groep gevonden met deze code.');return;}
+      const data=snap.data();
+      S.groupId=code;
+      applyRemoteGroup(data);
+      subscribeGroup();
+      renderHomeGroup();
+      toast('Verbonden met de huisgroep!');
+    });
+  }).catch(function(){toast('Kon niet verbinden. Check je internetverbinding.');});
+}
+function leaveGroup(){
+  if(GROUP_UNSUB){GROUP_UNSUB();GROUP_UNSUB=null;}
+  S.groupId=null;save();renderHomeGroup();
+  toast('Je hebt de huisgroep verlaten. Je eigen gegevens blijven gewoon bewaard.');
+}
+async function copyGroupCode(){
+  if(!S.groupId)return;
+  const text='Doe je mee met onze Huisweek-groep? Open de app en voer deze code in: '+S.groupId;
+  try{await navigator.clipboard.writeText(text);toast('Code gekopieerd. Plak hem in WhatsApp.');return;}catch(e){}
+  TX=text;openSheetWith(renderTextSheet);
+}
+function renderHomeGroup(){
+  const el=$('#groupCard');
+  if(!el)return;
+  if(S.groupId){
+    el.innerHTML='<h3>Huisgroep</h3><p class="sm">Je deelt nu je agenda, taken, huisgenoten en boodschappenlijst live met iedereen in deze groep.</p>'
+      +'<div class="group-code">'+esc(S.groupId)+'</div>'
+      +'<div class="stack"><button class="btn primary wide" type="button" data-act="groupcopy">📤 Nodig iemand uit</button>'
+      +'<button class="btn danger wide" type="button" data-act="groupleave">Groep verlaten</button></div>'
+      +'<p class="sm" style="margin:12px 0 0;font-size:13px">Punten, Klusmaatje, thema en je profiel blijven persoonlijk en worden niet gedeeld.</p>';
+  }else{
+    el.innerHTML='<h3>Huisgroep</h3><p class="sm">Deel je agenda en taken live met huisgenoten, vrienden of familie op hun eigen telefoon.</p>'
+      +'<button class="btn primary wide" type="button" data-act="groupcreate" style="margin-bottom:12px">Nieuwe huisgroep starten</button>'
+      +'<div class="addrow"><input class="inp" id="group-code" type="text" maxlength="8" placeholder="Code van een groep" autocomplete="off" style="text-transform:uppercase"><button class="btn" type="button" data-act="groupjoin">Meedoen</button></div>';
+  }
+}
+
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
   const b=e.target.closest('[data-act]');
@@ -3320,7 +3442,7 @@ document.addEventListener('click',function(e){
   }
   else if(a==='reset2'){
     try{localStorage.removeItem(STORE);}catch(_){}
-    S.plan={};S.custom=[];S.customCats=[];S.repeats=[];S.people=[];S.theme='auto';S.remind={on:false,lead:10};S.claimed={};S.dayView='list';S.cstat={};S.rankAt={};S.rankCat=null;S.mascotName='Klusmaatje';S.petDate='';S.seenVersion=APP_VERSION;S.mascotSeenStage=0;S.mascotEquip={head:null,face:null,neck:null};S.mascotStageAt={};S.profileName='';S.profilePhoto=null;S.profileFrame='none';S.tip=false;S.intro=0;S.earned=0;S.spent=0;S.owned=['theme:default','conf:classic'];S.themeId='default';S.confettiId='classic';S.boostUntil=0;S.shields=0;S.shielded={};S.preview=null;S.shopHint=false;S.list=[];S.badges=[];S.stats={timers:0,rolls:0,bought:0};S.who='all';S.addWho='';S.filter='all';S.q='';
+    S.plan={};S.custom=[];S.customCats=[];S.repeats=[];S.people=[];S.theme='auto';S.remind={on:false,lead:10};S.claimed={};S.dayView='list';S.cstat={};S.rankAt={};S.rankCat=null;S.mascotName='Klusmaatje';S.petDate='';S.seenVersion=APP_VERSION;S.mascotSeenStage=0;S.mascotEquip={head:null,face:null,neck:null};S.mascotStageAt={};S.profileName='';S.profilePhoto=null;S.profileFrame='none';if(GROUP_UNSUB){GROUP_UNSUB();GROUP_UNSUB=null;}S.groupId=null;S.tip=false;S.intro=0;S.earned=0;S.spent=0;S.owned=['theme:default','conf:classic'];S.themeId='default';S.confettiId='classic';S.boostUntil=0;S.shields=0;S.shielded={};S.preview=null;S.shopHint=false;S.list=[];S.badges=[];S.stats={timers:0,rolls:0,bought:0};S.who='all';S.addWho='';S.filter='all';S.q='';
     applyTheme();applyThemeStyle();S.tab='day';renderAll();window.scrollTo(0,0);
     toast('Alle gegevens gewist');
   }
@@ -3397,6 +3519,10 @@ document.addEventListener('click',function(e){
   else if(a==='choosephoto'){const i=$('#avatarFile');if(i)i.click();}
   else if(a==='removephoto')removeAvatarPhoto();
   else if(a==='frametap')tapFrame(b.dataset.id);
+  else if(a==='groupcreate')createGroup();
+  else if(a==='groupjoin')joinGroup();
+  else if(a==='groupleave')leaveGroup();
+  else if(a==='groupcopy')copyGroupCode();
   else if(a==='renamemascot')openMascotName();
   else if(a==='mnsave')saveMascotName();
   else if(a==='wnclose')closeWhatsNew();
@@ -3474,6 +3600,7 @@ try{const qt=new URLSearchParams(location.search).get('tab');if(qt&&['day','week
 S.anim=true;
 renderAll();
 runSplash();
+if(S.groupId)subscribeGroup();
 setInterval(tick,15000);
 tick();
 try{
