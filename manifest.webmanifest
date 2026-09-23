@@ -1,0 +1,104 @@
+{
+  "id": "./",
+  "name": "Huisweek",
+  "short_name": "Huisweek",
+  "description": "Plan je huishouden per week met agenda, punten, een 3D-Klusmaatje, rangen per categorie en een winkel.",
+  "lang": "nl",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0F1E",
+  "theme_color": "#2F4BF0",
+  "categories": [
+    "lifestyle",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/01-dag.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Je dag als lijst"
+    },
+    {
+      "src": "screenshots/02-agenda.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Je dag in de agenda"
+    },
+    {
+      "src": "screenshots/03-boodschappen.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Boodschappenlijst met icoontjes"
+    },
+    {
+      "src": "screenshots/04-rangen.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Een rang per categorie"
+    },
+    {
+      "src": "screenshots/05-klusmaatje.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Je Klusmaatje in 3D"
+    },
+    {
+      "src": "screenshots/06-winkel.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Winkel met thema's"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Vandaag",
+      "short_name": "Vandaag",
+      "url": "./?tab=day"
+    },
+    {
+      "name": "Boodschappen",
+      "short_name": "Boodschappen",
+      "url": "./?tab=list"
+    },
+    {
+      "name": "Taken",
+      "short_name": "Taken",
+      "url": "./?tab=tasks"
+    },
+    {
+      "name": "Rangen",
+      "short_name": "Rangen",
+      "url": "./?tab=ranks"
+    }
+  ]
+}
